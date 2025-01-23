@@ -1,0 +1,67 @@
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+#library(GEOquery)
+library(pheatmap)
+library(readxl)
+library(ComplexHeatmap)
+#library(InteractiveComplexHeatmap)
+library(circlize)
+library(dendextend)
+
+
+filename2<-'/home/damian/Desktop/R/datatest/gene.csv'
+
+data <- read.table(filename2, sep = "\t", quote = "", stringsAsFactors = FALSE, header = TRUE)
+duplicates <- data[duplicated(data[[1]]), ] # Assuming the first column is used as row names
+print(duplicates)
+
+
+# Read the data into a data.frame
+my_data1 <- read.table(filename2, sep="\t", quote="", stringsAsFactors=FALSE,header=TRUE,row.names=1)
+
+
+dim(my_data) # (rows columns)
+
+nrow(my_data) # rows: locations (bins) in genome
+ncol(my_data) # columns: cells
+
+my_matrix1 <- as.matrix(my_data1)
+
+scaled_matrix <- t(scale(t(my_matrix1))) 
+
+fontsize <- 0.6
+
+
+# Put cell labels on the left side
+Heatmap(scaled_matrix , 
+        name = "With Cluster",
+        cluster_columns=TRUE,
+        row_names_side = "left", 
+        show_row_dend = TRUE,
+        row_names_gp=gpar(cex=fontsize))
+# Make the dendrogram wider
+Heatmap(scaled_matrix , 
+        name = "Sample1",
+        cluster_columns=FALSE,
+        row_names_side = "left", 
+        show_row_dend = TRUE,
+        row_names_gp=gpar(cex=fontsize),
+        row_dend_width = unit(3, "cm"))
+
+Heatmap(scaled_matrix, 
+        cluster_columns = FALSE,
+        row_names_side = "left", 
+        show_row_dend = TRUE,
+        row_names_gp = gpar(cex = fontsize),  # Row font size
+        column_names_gp = gpar(cex = 0.5))
+
+
+Heatmap(scaled_matrix, 
+        name = "Cluster",
+        cluster_columns = TRUE,
+        row_names_side = "left", 
+        show_row_dend = TRUE,
+        row_names_gp = gpar(cex = fontsize),  # Row font size
+        column_names_gp = gpar(cex = 0.5))
+
